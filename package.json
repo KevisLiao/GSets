@@ -1,0 +1,8 @@
+{
+  "name": "GSets",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:kevinstarklk/GSets.git",
+  "author": "Kevin Stark <kevinstarklk@outlook.com>",
+  "license": "MIT"
+}
