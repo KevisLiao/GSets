@@ -1,7 +1,7 @@
 <template>
   <v-app id="setsDetail">
     <v-toolbar color="blue" dark fixed app style="margin-bottom:48px;">
-      <v-toolbar-side-icon @click.stop="$router.go(-1)">
+      <v-toolbar-side-icon @click.stop="$router.push({ path: '/homepage/userDeviceSets', query: {activeBtn: 'sets'} })">
         <v-icon>arrow_back</v-icon>
       </v-toolbar-side-icon>
       <v-toolbar-title>{{setsTitle}}</v-toolbar-title>
@@ -26,26 +26,79 @@
               :deviceType="item.deviceType"
               :deviceCode="item.deviceCode"
               style="margin-bottom:16px;"
+              @collection = "handleCollection"
             ></device-card>
           </template>
-          <v-btn color="#1d67bd" dark fixed bottom right fab>
+          <v-btn color="#1d67bd" dark fixed bottom right fab @click="$router.push('/homepage/deviceSets')">
             <v-icon>add</v-icon>
           </v-btn>
         </v-flex>
       </v-layout>
     </v-container>
+
+    <!-- 收藏弹窗 -->
+    <v-dialog v-model="collectionDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">选择收藏集</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-select
+                v-model="selectCollection"
+                :items="collectionList"
+                item-text="collectionName"
+                item-value="collectionCode"
+                label="请选择"
+                persistent-hint
+                return-object
+                single-line
+              ></v-select>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="handleCollectionCancel">取消</v-btn>
+          <v-btn color="blue darken-1" flat @click="handleCollectionConfirm">确认</v-btn>
+        </v-card-actions>
+      </v-card>
+
+      <!-- 提示 -->
+      <v-dialog v-model="alert" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span>{{alertText}}</span>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" flat @click="alert=false">关闭</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
 import DeviceCard from "@/components/user/deviceCard.vue";
 import deviceAPI from "@/service/device";
+import collectionAPI from "@/service/collection"
 
 export default {
   data() {
     return {
       isLoading: false,
       deviceSetsType: "",
+      collectionDialog: false,
+      collectionDeviceCode: null,
+      selectCollection: [],
+      alert: false,
+      alertText: '',
+      collectionList: [],
       deviceList: []
     };
   },
@@ -67,7 +120,39 @@ export default {
       });
     this.isLoading = false;
   },
-  methods: {},
+  methods: {
+    async handleCollection(deviceCode) {
+      await collectionAPI.collectionList({userCode: this.$store.state.userCode}).then((res) => {
+        if(res.data.code ===  0) {
+          this.collectionList = res.data.data.collectionList
+        }
+      })
+      this.collectionDeviceCode = deviceCode
+      this.collectionDialog = true
+    },
+    handleCollectionCancel() {
+      this.collectionDialog = false
+      this.selectCollection = []
+    },
+    async handleCollectionConfirm() {
+      if(this.selectCollection.length === 0) {
+        this.alertText = '请选择收藏集'
+        this.alert = true
+        return
+      }
+      await collectionAPI.addDeviceToCollection({collectionCode: this.selectCollection.collectionCode, deviceCode: this.collectionDeviceCode}).then((res) => {
+        if(res.data.code === 0) {
+          this.collectionDialog = false
+          this.selectCollection = []
+          this.alertText = '收藏成功'
+          this.alert = true
+        } else if (res.data.code === 1006) {
+          this.alertText = '设备已在此收藏集'
+          this.alert = true
+        }
+      })
+    }
+  },
   computed: {
     setsTitle() {
       switch (this.deviceSetsType) {

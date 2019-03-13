@@ -16,11 +16,6 @@
               <div>￥{{devicePrice}}</div>
             </div>
           </v-card-text>
-          <!-- <v-divider light></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-icon>more_vert</v-icon>
-          </v-card-actions>-->
         </v-flex>
       </v-layout>
       <v-divider light></v-divider>
@@ -30,8 +25,8 @@
             <v-icon color="#e09015">stars</v-icon>
             <span style="color:#e09015;margin-left:8px;">暂无评分</span>
             <v-spacer></v-spacer>
-            <v-btn icon @click="addDevice">
-              <v-icon>add</v-icon>
+            <v-btn icon>
+              <v-icon>close</v-icon>
             </v-btn>
           </v-card-actions>
         </v-flex>
@@ -41,9 +36,6 @@
 </template>
 
 <script>
-import userAPI from "@/service/user"
-import deviceAPI from "@/service/device";
-
 export default {
   props: {
     deviceName: {
@@ -65,25 +57,6 @@ export default {
     deviceCode: {
       type: Number,
       default: 53
-    }
-  },
-  data() {
-    return {
-      deviceSetsCode: ''
-    }
-  },
-  methods: {
-    async addDevice() {
-      await userAPI.getDeviceSetsCode({userCode: this.$store.state.userCode, deviceSetsType: this.deviceType}).then((res) => {
-        this.deviceSetsCode = res.data.data.deviceSetsCode
-      })
-      await deviceAPI.addUserDevice({deviceSetsCode: this.deviceSetsCode, deviceCode: this.deviceCode}).then((res) => {
-        if(res.data.code === 0) {
-          this.$emit('showNotice')
-        } else if (res.data.code === 1007) {
-          this.$emit('showAlert')
-        }
-      })
     }
   },
   computed: {

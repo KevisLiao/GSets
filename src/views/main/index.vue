@@ -37,26 +37,13 @@
     </v-navigation-drawer>
     <v-toolbar color="blue" dark fixed app>
       <v-toolbar-side-icon @click.stop="drawer = !drawer">
-        <v-avatar  size="36" color="grey lighten-4">
+        <!-- <v-avatar  size="36" color="grey lighten-4">
           <img src="https://vuetifyjs.com/apple-touch-icon-180x180.png">
-        </v-avatar>
+        </v-avatar> -->
       </v-toolbar-side-icon>
       <v-toolbar-title>GSets</v-toolbar-title>
     </v-toolbar>
     <router-view></router-view>
-    <!-- <v-content color="blue">
-        <v-container fill-height>
-          <v-layout justify-center >
-            <v-flex>
-                <v-card 
-                 >213</v-card>
-                </v-flex>
-        </v-layout>
-      </v-container>
-      <v-container fluid fill-height>
-          
-      </v-container>
-    </v-content>-->
   </v-app>
 </template>
 

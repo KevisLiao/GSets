@@ -27,15 +27,26 @@
               :deviceCode="item.deviceCode"
               style="margin-bottom:16px;"
               @showNotice="notice"
+              @showAlert="addAlert"
             ></device-card>
           </template>
-          <v-btn color="#1d67bd" dark fixed bottom right fab>
-            <v-icon>add</v-icon>
-          </v-btn>
         </v-flex>
       </v-layout>
     </v-container>
+
+    <!-- 提示 -->
     <v-snackbar v-model="snackbar" color="success" :timeout="timeout">添加成功</v-snackbar>
+    <v-dialog v-model="alert" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span>设备已存在</span>
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat @click="alert=false">关闭</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -50,7 +61,8 @@ export default {
       deviceSetsType: "",
       timeout: 2000,
       deviceList: [],
-      snackbar: false
+      snackbar: false,
+      alert: false
     };
   },
   components: {
@@ -73,6 +85,9 @@ export default {
   methods: {
     notice() {
       this.snackbar = true;
+    },
+    addAlert() {
+      this.alert = true
     }
   },
   computed: {

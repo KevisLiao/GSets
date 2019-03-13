@@ -51,10 +51,12 @@ export default {
     Collection,
     Wishlist
   },
-  created() {},
+  created() {
+    this.activeBtn = this.$route.query.activeBtn? this.$route.query.activeBtn : "sets";
+  },
   data: () => ({
     drawer: null,
-    activeBtn: 'sets'
+    activeBtn: ''
   }),
   props: {
     source: String

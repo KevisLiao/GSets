@@ -1,7 +1,7 @@
 <template>
   <v-hover>
     <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
-      <v-layout>
+      <v-layout @click="test">
         <v-flex xs5>
           <v-card-text primary-title>
             <v-img :src="deviceImg" height="125px" contain></v-img>
@@ -30,7 +30,7 @@
             <v-icon color="#e09015">stars</v-icon>
             <span style="color:#e09015;margin-left:8px;">暂无评分</span>
             <v-spacer></v-spacer>
-            <v-btn icon>
+            <v-btn icon @click="$emit('collection',deviceCode)">
               <v-icon>star</v-icon>
             </v-btn>
             <v-btn icon>
@@ -72,6 +72,10 @@ export default {
       return require(`@/assets/img/device/${this.deviceType}/${
         this.deviceCode
       }.jpg`);
+    }
+  },
+  methods: {
+    test() {
     }
   }
 };
