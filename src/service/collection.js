@@ -21,4 +21,7 @@ export default {
     addDeviceToCollection: (params = {}) => {
         return request.post("/collection/addDeviceToCollection", params)
     },
+    deleteDeviceFromCollection: (params = {}) => {
+        return request.post("/collection/deleteDeviceFromCollection", params)
+    },
 }

@@ -42,6 +42,7 @@
               :deviceType="item.deviceType"
               :deviceCode="item.deviceCode"
               style="margin-bottom:16px;"
+              @deleteDevice="deleteDeviceHandler"
             ></collection-card>
           </template>
         </v-flex>
@@ -84,6 +85,8 @@
         </v-card>
       </v-dialog>
     </v-dialog>
+
+    <!-- 收藏集删除对话框 -->
     <v-dialog v-model="deleteAlert" max-width="500px">
       <v-card>
         <v-card-title>
@@ -96,6 +99,22 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- 收藏集设备删除对话框 -->
+    <v-dialog v-model="deleteDeviceAlert" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span>确认删除此设备？</span>
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat @click="deleteDeviceAlert = false">取消</v-btn>
+          <v-btn color="primary" flat @click="deleteDeviceConfirm">删除</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar v-model="snackbar" color="success" :timeout="timeout">删除成功</v-snackbar>
   </v-app>
 </template>
 
@@ -107,8 +126,12 @@ export default {
   data() {
     return {
       isLoading: false,
+      snackbar: false,
+      timeout: 2000,
       alert: false,
       deleteAlert: false,
+      deleteDeviceAlert: false,
+      deleteDeviceCode: null,
       collectionCode: null,
       collectionName: '',
       collectionProfile: '',
@@ -173,6 +196,22 @@ export default {
         }
       })
     },
+    deleteDeviceHandler(deviceCode) {
+      this.deleteDeviceCode = deviceCode
+      this.deleteDeviceAlert = true
+    },
+    async deleteDeviceConfirm() {
+      await collectionAPI.deleteDeviceFromCollection({collectionCode: this.collectionCode,  deviceCode: this.deleteDeviceCode}).then((res) => {
+        if(res.data.code === 0) {
+          this.deleteDeviceAlert = false
+          this.collectionDeviceCount--
+          this.snackbar = true
+        }
+      })
+      await collectionAPI.collectionDeviceList({collectionCode: this.collectionCode}).then(res => {
+        this.deviceList = res.data.data.deviceList;
+      })
+    }
   },
 };
 </script>

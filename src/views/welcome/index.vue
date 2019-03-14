@@ -104,14 +104,6 @@ export default {
     methods: {
       async handleLogin() {
           this.buttonLoading = true
-        //   if(this.userAccount === '') {
-        //       this.userAccountValidate = false
-        //       return
-        //   }
-        //   if(this.userPassword === '') {
-        //       this.userPasswordValidate = false
-        //       return
-        //   }
           try {
               await userAPI.login({userAccount: this.userAccount, userPassword: this.userPassword}).then((res) => {
                 res = res.data

@@ -25,7 +25,7 @@
             <v-icon color="#e09015">stars</v-icon>
             <span style="color:#e09015;margin-left:8px;">暂无评分</span>
             <v-spacer></v-spacer>
-            <v-btn icon>
+            <v-btn icon @click="handleDelete">
               <v-icon>close</v-icon>
             </v-btn>
           </v-card-actions>
@@ -57,6 +57,11 @@ export default {
     deviceCode: {
       type: Number,
       default: 53
+    }
+  },
+  methods: {
+    handleDelete() {
+      this.$emit('deleteDevice',this.deviceCode)
     }
   },
   computed: {

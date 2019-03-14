@@ -15,7 +15,7 @@
               :key="item.collectionCode">
               </collection-list>
           </template>
-          <v-btn color="#1d67bd" dark fixed bottom right fab style="bottom:72px;" @click="addDialog = true">
+          <v-btn color="#1d67bd" dark fixed bottom right fab style="bottom:72px;" @click="handleAdd">
             <v-icon>add</v-icon>
           </v-btn>
         </v-flex>
@@ -92,6 +92,11 @@ export default {
     })
   },
   methods: {
+    handleAdd() {
+      this.newCollectionName = ''
+      this.newCollectionProfile = ''
+      this.addDialog = true
+    },
     async handleAddConfirm() {
       if(this.newCollectionName === '' || this.newCollectionProfile === null) {
         this.alert = true
@@ -99,7 +104,7 @@ export default {
       }
       await collectionAPI.newCollection({collectionName: this.newCollectionName, collectionProfile: this.newCollectionProfile, userCode: this.$store.state.userCode}).then((res) => {
         if(res.data.code === 0) {
-          this.editDialog = false
+          this.addDialog = false
           this.snackbar = true
         }
       })
