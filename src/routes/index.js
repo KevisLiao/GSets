@@ -6,6 +6,7 @@ import index from '../views/index.vue'
 import welcome from '../views/welcome/index.vue'
 import homepage from '../views/main/index.vue'
 import setsDetail from '../views/main/user/setsDetail.vue'
+import deviceDetail from '../views/main/device/index.vue'
 import collectionDetail from '../views/main/user/collectionDetail.vue'
 import deviceSetsDetail from '../views/main/deviceSets/deviceSetsDetail.vue'
 
@@ -65,6 +66,11 @@ const routes= [
     path: '/collectionDetail',
     name: 'collectionDetail',
     component: collectionDetail
+  },
+  {
+    path: '/deviceDetail',
+    name: 'deviceDetail',
+    component: deviceDetail
   },
 ]
 

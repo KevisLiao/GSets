@@ -110,6 +110,7 @@ export default {
                 if(res.code === 0) {
                     console.warn(res.data)
                     cookie.set('userCode', res.data.userCode)
+                    cookie.set('userName', res.data.userName)
                     this.$store.commit('updateUserCode', { userCode: res.data.userCode })
                     this.$router.push('/homepage/userDeviceSets')
                 } else if(res.code === 1004) {

@@ -1,7 +1,7 @@
 <template>
   <v-hover>
     <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
-      <v-layout>
+      <v-layout @click="toDeviceDetail">
         <v-flex xs5>
           <v-card-text primary-title>
             <v-img :src="deviceImg" height="125px" contain></v-img>
@@ -84,6 +84,9 @@ export default {
           this.$emit('showAlert')
         }
       })
+    },
+    toDeviceDetail() {
+      this.$router.push({ path: '/deviceDetail', query: {deviceCode: this.deviceCode} })
     }
   },
   computed: {

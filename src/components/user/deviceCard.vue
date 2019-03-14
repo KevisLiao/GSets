@@ -1,7 +1,7 @@
 <template>
   <v-hover>
     <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
-      <v-layout @click="test">
+      <v-layout @click="toDeviceDetail">
         <v-flex xs5>
           <v-card-text primary-title>
             <v-img :src="deviceImg" height="125px" contain></v-img>
@@ -30,10 +30,10 @@
             <v-icon color="#e09015">stars</v-icon>
             <span style="color:#e09015;margin-left:8px;">暂无评分</span>
             <v-spacer></v-spacer>
-            <v-btn icon @click="$emit('collection',deviceCode)">
+            <v-btn icon @click="$emit('collection', deviceCode)">
               <v-icon>star</v-icon>
             </v-btn>
-            <v-btn icon>
+            <v-btn icon @click="$emit('deleteDevice', deviceCode)">
               <v-icon>close</v-icon>
             </v-btn>
           </v-card-actions>
@@ -75,7 +75,8 @@ export default {
     }
   },
   methods: {
-    test() {
+    toDeviceDetail() {
+      this.$router.push({ path: '/deviceDetail', query: {deviceCode: this.deviceCode} })
     }
   }
 };

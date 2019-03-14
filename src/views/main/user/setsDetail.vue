@@ -27,6 +27,7 @@
               :deviceCode="item.deviceCode"
               style="margin-bottom:16px;"
               @collection = "handleCollection"
+              @deleteDevice= "handleDeviceDelete"
             ></device-card>
           </template>
           <v-btn color="#1d67bd" dark fixed bottom right fab @click="$router.push('/homepage/deviceSets')">
@@ -67,6 +68,20 @@
         </v-card-actions>
       </v-card>
 
+      <!-- 设备删除对话框 -->
+      <v-dialog v-model="deleteDeviceAlert" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span>确认删除此设备？</span>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" flat @click="handleDeviceDeleteCancel">取消</v-btn>
+            <v-btn color="primary" flat @click="handleDeviceDeleteConfirm">删除</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <!-- 提示 -->
       <v-dialog v-model="alert" max-width="500px">
         <v-card>
@@ -80,6 +95,8 @@
         </v-card>
       </v-dialog>
     </v-dialog>
+
+    <v-snackbar v-model="snackbar" color="success" :timeout="timeout">删除成功</v-snackbar>
   </v-app>
 </template>
 
@@ -92,12 +109,17 @@ export default {
   data() {
     return {
       isLoading: false,
+      deleteDeviceAlert: false,
+      deleteDeviceCode: null,
+      deviceSetsCode: null,
       deviceSetsType: "",
       collectionDialog: false,
       collectionDeviceCode: null,
       selectCollection: [],
       alert: false,
       alertText: '',
+      snackbar: false,
+      timeout: 2000,
       collectionList: [],
       deviceList: []
     };
@@ -110,14 +132,14 @@ export default {
     this.deviceSetsType = this.$route.query.deviceSetsType
       ? this.$route.query.deviceSetsType
       : "";
-    await deviceAPI
-      .userDeviceList({
-        userCode: this.$store.state.userCode,
-        deviceSetsType: this.deviceSetsType
-      })
-      .then(res => {
+    await deviceAPI.userDeviceList({ userCode: this.$store.state.userCode, deviceSetsType: this.deviceSetsType }).then(res => {
         this.deviceList = res.data.data.deviceList;
-      });
+    });
+    await deviceAPI.findUserSetsCode({userCode: this.$store.state.userCode, deviceSetsType: this.deviceSetsType}).then((res) => {
+      if(res.data.code === 0) {
+        this.deviceSetsCode = res.data.data.deviceSetsCode
+      }
+    })
     this.isLoading = false;
   },
   methods: {
@@ -151,6 +173,24 @@ export default {
           this.alert = true
         }
       })
+    },
+    async handleDeviceDelete(deviceCode) {
+      this.deleteDeviceCode = deviceCode
+      this.deleteDeviceAlert = true
+    },
+    handleDeviceDeleteCancel() {
+      this.deleteDeviceAlert = false
+    },
+    async handleDeviceDeleteConfirm() {
+      await deviceAPI.deleteDeviceFromDeviceSets({deviceSetsCode: this.deviceSetsCode, deviceCode: this.deleteDeviceCode}).then((res) => {
+        if(res.data.code === 0) {
+          this.deleteDeviceAlert = false
+          this.snackbar = true
+        }
+      })
+      await deviceAPI.userDeviceList({ userCode: this.$store.state.userCode, deviceSetsType: this.deviceSetsType }).then(res => {
+        this.deviceList = res.data.data.deviceList;
+      });
     }
   },
   computed: {

@@ -10,4 +10,13 @@ export default {
     addUserDevice: (params = {}) => {
         return request.post("/device/addUserDevice", params)
     },
+    findUserSetsCode: (params = {}) => {
+        return request.post("/device/findUserSetsCode", params)
+    },
+    deleteDeviceFromDeviceSets: (params = {}) => {
+        return request.post("/device/deleteDeviceFromDeviceSets", params)
+    },
+    findDeviceByDeviceCode: (params = {}) => {
+        return request.post("/device/findDeviceByDeviceCode", params)
+    },
 }

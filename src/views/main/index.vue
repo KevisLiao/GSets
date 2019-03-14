@@ -9,7 +9,7 @@
             </v-list-tile-avatar>
 
             <v-list-tile-content>
-              <v-list-tile-title style="color:#ffffff">Kevin Stark</v-list-tile-title>
+              <v-list-tile-title style="color:#ffffff">{{userName}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -48,11 +48,12 @@
 </template>
 
 <script>
+import cookie from 'js-cookie'
+
 export default {
   name: "index",
   components: {},
   created() {
-    console.warn('userindex')
   },
   data: () => ({
     drawer: false
@@ -66,6 +67,11 @@ export default {
     },
     toDeviceSets() {
       this.$router.push("/homepage/deviceSets");
+    }
+  },
+  computed: {
+    userName() {
+      return cookie.get('userName')
     }
   }
 };
