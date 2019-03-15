@@ -68,13 +68,7 @@ import collectionAPI from "@/service/collection"
 export default {
   data() {
     return {
-      collectionList: [
-        {
-          collectionCode: 1,
-          collectionName: '工作',
-          collectionProfile: '工作设备'
-        }
-      ],
+      collectionList: [],
       addDialog: false,
       newCollectionName: '',
       newCollectionProfile: '',

@@ -167,6 +167,13 @@ export default {
                 this.userName = ''
                 this.userProfile = ''
                 this.loginStatus = true
+            } else if(res.data.code === 1003) {
+                this.alertMsg = '账号已存在'
+                this.alert = true
+                this.userRegisterAccount = ''
+                this.userRegisterPassword = ''
+                this.userName = ''
+                this.userProfile = ''
             }
         })
       }
