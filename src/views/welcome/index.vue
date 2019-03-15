@@ -14,7 +14,7 @@
               <v-toolbar dark color="primary">
                 <v-toolbar-title>登录</v-toolbar-title>
                 <v-spacer></v-spacer>
-                    <v-btn icon large target="_blank" @click="loginStatus = !loginStatus">
+                    <v-btn icon large target="_blank" @click="toRegister">
                       <v-icon large>person_add</v-icon>
                     </v-btn>
               </v-toolbar>
@@ -49,12 +49,11 @@
             
 
             <!-- 注册卡片 -->
-            <!-- <transition name="fade"> -->
             <v-card class="elevation-12 card" v-else key="card2">
               <v-toolbar dark color="primary">
                 <v-toolbar-title>注册</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon large target="_blank" @click="loginStatus = !loginStatus">
+                <v-btn icon large target="_blank" @click="toLogin">
                   <v-icon large>arrow_back</v-icon>
                 </v-btn>
               </v-toolbar>
@@ -62,7 +61,7 @@
                 <v-form>
                   <v-text-field v-model="userRegisterAccount" prepend-icon="person" name="login" label="账号" type="text"></v-text-field>
                   <v-text-field v-model="userRegisterPassword" id="password" prepend-icon="lock" name="password" label="密码" type="password"></v-text-field>
-                  <v-text-field id="passwordConfirm" prepend-icon="check" name="passwordConfirm" label="确认密码" type="password"></v-text-field>
+                  <!-- <v-text-field id="passwordConfirm" prepend-icon="check" name="passwordConfirm" label="确认密码" type="password"></v-text-field> -->
                   <v-text-field v-model="userName" prepend-icon="label" name="login" label="昵称" type="text"></v-text-field>
                   <v-text-field v-model="userProfile" prepend-icon="notes" name="login" label="简介" type="text"></v-text-field>
                 </v-form>
@@ -79,6 +78,18 @@
         </v-layout>
       </v-container>
     </v-content>
+
+     <v-dialog v-model="alert" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span>{{alertMsg}}</span>
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat @click="alert=false">关闭</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template> 
 
@@ -99,9 +110,23 @@ export default {
       userRegisterPassword: '',
       userName: '',
       userProfile: '',
-      userAvatar: ''
+      userAvatar: '',
+      alert: false,
+      alertMsg: ''
     }),
     methods: {
+      toRegister() {
+        this.loginStatus = !this.loginStatus
+        this.userAccount = ''
+        this.userPassword = ''
+      },
+      toLogin() {
+        this.loginStatus = !this.loginStatus
+        this.userRegisterAccount = ''
+        this.userRegisterPassword = ''
+        this.userName = ''
+        this.userProfile = ''
+      },
       async handleLogin() {
           this.buttonLoading = true
           try {
@@ -128,11 +153,22 @@ export default {
           
       },
       async handleRegister() {
-          await userAPI.register({userAccount: this.userRegisterAccount, userPassword: this.userRegisterPassword, userName: this.userName, userProfile: this.userProfile}).then((res) => {
-               if(res.code === 0) {
-                  console.warn(res.data)
-              }
-          })
+        if(this.userRegisterAccount === '' || this.userRegisterPassword === '' || this.userName === '' || this.userProfile === '') {
+          this.alertMsg = "信息不能为空"
+          this.alert = true
+          return
+        }
+        await userAPI.register({userAccount: this.userRegisterAccount, userPassword: this.userRegisterPassword, userName: this.userName, userProfile: this.userProfile}).then((res) => {
+             if(res.data.code === 0) {
+                this.alertMsg = '注册成功'
+                this.alert = true
+                this.userRegisterAccount = ''
+                this.userRegisterPassword = ''
+                this.userName = ''
+                this.userProfile = ''
+                this.loginStatus = true
+            }
+        })
       }
     },
     props: {
