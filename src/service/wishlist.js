@@ -9,4 +9,7 @@ export default {
     deleteFromWishlist: (params = {}) => {
         return request.post("/wishlist/deleteFromWishlist", params)
     },
+    addUserDevice: (params = {}) => {
+        return request.post("/wishlist/addUserDevice", params)
+    },
 }

@@ -28,7 +28,7 @@ export default {
             method: 'get',
             url,
             params, // get 请求时带的参数
-            timeout: 5000,
+            timeout: 60000,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }

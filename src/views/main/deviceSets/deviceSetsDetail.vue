@@ -28,18 +28,42 @@
               style="margin-bottom:16px;"
               @showNotice="notice"
               @showAlert="addAlert"
+              @showWishlistDialog="addToWishlist"
             ></device-card>
           </template>
         </v-flex>
       </v-layout>
     </v-container>
 
+    <!-- 心愿单弹窗 -->
+    <v-dialog v-model="wishlistDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">添加到心愿单</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field label="理由？" required v-model="wishlistInfo"></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="handleWishlistCancel">取消</v-btn>
+          <v-btn color="blue darken-1" flat @click="handleWishlistConfirm">确认</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- 提示 -->
     <v-snackbar v-model="snackbar" color="success" :timeout="timeout">添加成功</v-snackbar>
     <v-dialog v-model="alert" max-width="500px">
       <v-card>
         <v-card-title>
-          <span>设备已存在</span>
+          <span>{{alertInfo}}</span>
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -53,16 +77,21 @@
 <script>
 import DeviceCard from "@/components/device/deviceCard.vue";
 import deviceAPI from "@/service/device";
+import wishlistAPI from "@/service/wishlist"
 
 export default {
   data() {
     return {
       isLoading: false,
       deviceSetsType: "",
+      deviceCode: null,
+      wishlistInfo:'',
       timeout: 2000,
       deviceList: [],
       snackbar: false,
-      alert: false
+      wishlistDialog: false,
+      alert: false,
+      alertInfo: '',
     };
   },
   components: {
@@ -87,8 +116,36 @@ export default {
       this.snackbar = true;
     },
     addAlert() {
-      this.alert = true
+      this.alertInfo = "设备已存在"
+      this.alert = true;
+    },
+    addToWishlist(deviceCode) {
+      this.deviceCode = deviceCode
+      this.wishlistDialog = true
+    },
+    handleWishlistCancel() {
+      this.wishlistInfo = ''
+      this.deviceCode = null
+      this.wishlistDialog = false
+    },
+    async handleWishlistConfirm() {
+      if(this.wishlistInfo.length === 0) {
+        this.alertInfo = '信息不能为空'
+        this.alert = true
+        return
+      }
+      await wishlistAPI.addToWishlist({deviceCode: this.deviceCode, userCode: this.$store.state.userCode, wishlistInfo: this.wishlistInfo}).then((res) => {
+        if(res.data.code === 0) {
+          this.wishlistDialog = false
+          this.wishlistInfo = ''
+          this.snackbar = true
+        } else if (res.data.code === 1007) {
+          this.alertInfo = '设备已在心愿单'
+          this.alert = true
+        }
+      })
     }
+    
   },
   computed: {
     setsTitle() {
