@@ -30,7 +30,7 @@
             <v-icon color="#e09015">stars</v-icon>
             <span style="color:#e09015;margin-left:8px;">暂无评分</span>
             <v-spacer></v-spacer>
-            <v-btn icon @click="$emit('showWishlistDialog', deviceCode)">
+            <v-btn icon @click="$emit('collection', deviceCode)">
               <v-icon>star</v-icon>
             </v-btn>
             <v-btn icon @click="$emit('deleteDevice', deviceCode)">

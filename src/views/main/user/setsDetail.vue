@@ -26,7 +26,7 @@
               :deviceType="item.deviceType"
               :deviceCode="item.deviceCode"
               style="margin-bottom:16px;"
-              @collection = "handleCollection"
+              @collection="handleCollection"
               @deleteDevice= "handleDeviceDelete"
             ></device-card>
           </template>
