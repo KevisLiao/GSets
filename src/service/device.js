@@ -19,4 +19,10 @@ export default {
     findDeviceByDeviceCode: (params = {}) => {
         return request.post("/device/findDeviceByDeviceCode", params)
     },
+    getDeviceComment: (params = {}) => {
+        return request.post("/device/getDeviceComment", params)
+    },
+    addDeviceComment: (params = {}) => {
+        return request.post("/device/addDeviceComment", params)
+    },
 }
