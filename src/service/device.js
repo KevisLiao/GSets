@@ -7,6 +7,9 @@ export default {
     deviceList: (params = {}) => {
         return request.post("/device/all", params)
     },
+    getDeviceByBrand: (params = {}) => {
+        return request.post("/device/getDeviceByBrand", params)
+    },
     addUserDevice: (params = {}) => {
         return request.post("/device/addUserDevice", params)
     },

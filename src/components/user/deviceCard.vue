@@ -27,8 +27,8 @@
       <v-layout>
         <v-flex xs12>
           <v-card-actions>
-            <v-icon color="#e09015">stars</v-icon>
-            <span style="color:#e09015;margin-left:8px;">暂无评分</span>
+            <!-- <v-icon color="#e09015">stars</v-icon> -->
+            <!-- <span style="color:#e09015;margin-left:8px;">暂无评分</span> -->
             <v-spacer></v-spacer>
             <v-btn icon @click="$emit('collection', deviceCode)">
               <v-icon>star</v-icon>

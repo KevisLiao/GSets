@@ -5,6 +5,11 @@
         <v-icon>arrow_back</v-icon>
       </v-toolbar-side-icon>
       <v-toolbar-title>{{setsTitle}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="filterDialog = true">
+        <v-icon>filter_list</v-icon>
+      </v-btn>
+      
     </v-toolbar>
 
     <!-- 设备卡片-->
@@ -58,6 +63,38 @@
       </v-card>
     </v-dialog>
 
+    <!-- 筛选弹窗 -->
+    <v-dialog v-model="filterDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">选择品牌</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-select
+                v-model="selectBrand"
+                :items="brandList"
+                item-text="brandName"
+                item-value="brandCode"
+                label="请选择"
+                persistent-hint
+                return-object
+                single-line
+              ></v-select>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="handleFilterCancel">取消</v-btn>
+          <v-btn color="blue darken-1" flat @click="handleFilterConfirm">确认</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- 提示 -->
     <v-snackbar v-model="snackbar" color="success" :timeout="timeout">添加成功</v-snackbar>
     <v-dialog v-model="alert" max-width="500px">
@@ -92,6 +129,57 @@ export default {
       wishlistDialog: false,
       alert: false,
       alertInfo: '',
+      filterDialog: false,
+      selectBrand: {
+          brandName: '全部',
+          brandCode: 0
+      },
+      brandList: [
+        {
+          brandName: '全部',
+          brandCode: 0
+        },
+        {
+          brandName: 'Apple',
+          brandCode: 1
+        },
+        {
+          brandName: 'Samsung',
+          brandCode: 2
+        },
+        {
+          brandName: '小米',
+          brandCode: 3
+        },
+        {
+          brandName: '华为',
+          brandCode: 4
+        },
+        {
+          brandName: 'OPPO',
+          brandCode: 5
+        },
+        {
+          brandName: 'Vivo',
+          brandCode: 6
+        },
+        {
+          brandName: 'OnePlus',
+          brandCode: 7
+        },
+        {
+          brandName: '锤子',
+          brandCode: 8
+        },
+        {
+          brandName: '魅族',
+          brandCode: 9
+        },
+        {
+          brandName: '美图',
+          brandCode: 10
+        },
+      ]
     };
   },
   components: {
@@ -142,6 +230,29 @@ export default {
         } else if (res.data.code === 1007) {
           this.alertInfo = '设备已在心愿单'
           this.alert = true
+        }
+      })
+    },
+    handleFilterCancel() {
+      this.filterDialog = false;
+      this.selectBrand = {
+          brandName: '全部',
+          brandCode: 0
+      }
+    },
+    async handleFilterConfirm() {
+      if(this.selectBrand.brandCode === 0) {
+        await deviceAPI.deviceList({deviceType: this.deviceSetsType}).then(res => {
+          this.deviceList = res.data.data.deviceList;
+          this.filterDialog = false
+        })
+        return
+      }
+      await deviceAPI.getDeviceByBrand({deviceType: this.deviceSetsType, deviceBrand: this.selectBrand.brandName}).then((res) => {
+        if(res.data.code === 0) {
+          this.deviceList = []
+          this.deviceList = res.data.data.deviceList
+          this.filterDialog = false
         }
       })
     }
